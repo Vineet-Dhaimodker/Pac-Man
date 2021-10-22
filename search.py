@@ -87,12 +87,94 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #starting point of pac-man
+    (x,y) = problem.getStartState()
+
+    #to check whether a point is visited or not
+    visited = {}
+    visited[(x,y)]= True
+
+    #path map.
+    map={}
+    stack = util.Stack()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        stack.push(successor)
+        map[successor[0]]=((x,y),successor[1])
+
+    #result list consists the directions.
+    res_list=[]
+
+    #while stack is not empty, loop over it.
+    while not stack.isEmpty():
+        cur_state = stack.pop()
+        cur_x,cur_y = cur_state[0][0],cur_state[0][1]
+
+        #check whether current point is not visited and make it as true.
+        if (cur_x, cur_y) not in visited:
+            visited[(cur_x, cur_y)] = True
+
+            #if current point is goal state , loop over map and return the path.
+            if problem.isGoalState((cur_x,cur_y)):
+                while cur_x!=x or cur_y!=y:
+                    ele = map[(cur_x,cur_y)]
+                    res_list.append(ele[1])
+                    (cur_x,cur_y) = ele[0]
+                res_list.reverse()
+                print "length of list :", len(res_list)
+                return res_list
+
+            #if neighbours are not visited , push them to stack.
+            for neighbour in problem.getSuccessors((cur_x,cur_y)):
+                if (neighbour[0][0], neighbour[0][1]) not in visited:
+                    stack.push(neighbour)
+                    map[neighbour[0]] = ((cur_x,cur_y),neighbour[1])
+    return res_list
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # starting point of pac-man
+    (x, y) = problem.getStartState()
+
+    # to check whether a point is visited or not
+    visited = {}
+    visited[(x, y)] = True
+
+    # path map.
+    map = {}
+    queue = util.Queue()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        queue.push(successor)
+        map[successor[0]] = ((x, y), successor[1])
+
+    # result list consists the directions.
+    res_list = []
+
+    # while queue is not empty, loop over it.
+    while not queue.isEmpty():
+        cur_state = queue.pop()
+        cur_x, cur_y = cur_state[0][0], cur_state[0][1]
+
+        # check whether current point is not visited and make it as true.
+        if (cur_x, cur_y) not in visited:
+            visited[(cur_x, cur_y)] = True
+
+            # if current point is goal state , loop over map and return the path.
+            if problem.isGoalState((cur_x, cur_y)):
+                while cur_x != x or cur_y != y:
+                    ele = map[(cur_x, cur_y)]
+                    res_list.append(ele[1])
+                    (cur_x, cur_y) = ele[0]
+                res_list.reverse()
+                print "length of list :", len(res_list)
+                return res_list
+
+            # if neighbours are not visited , push them to queue.
+            for neighbour in problem.getSuccessors((cur_x, cur_y)):
+                if (neighbour[0][0], neighbour[0][1]) not in visited:
+                    queue.push(neighbour)
+                    map[neighbour[0]] = ((cur_x, cur_y), neighbour[1])
+    return res_list
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
