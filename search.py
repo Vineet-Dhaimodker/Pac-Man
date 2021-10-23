@@ -99,33 +99,37 @@ def depthFirstSearch(problem):
     stack = util.Stack()
     for successor in problem.getSuccessors(problem.getStartState()):
         stack.push(successor)
-        map[successor[0]]=(first,successor[1])
+        map[successor] = first
 
     #result list consists the directions.
     res_list=[]
 
     #while stack is not empty, loop over it.
     while not stack.isEmpty():
-        cur_state = stack.pop()[0]
+        cur_state = stack.pop()
+        cur_point = cur_state[0]
 
         #check whether current point is not visited and make it as true.
-        if cur_state not in visited:
-            visited[cur_state] = True
+        if cur_point not in visited:
+            visited[cur_point] = True
 
             #if current point is goal state , loop over map and return the path.
-            if problem.isGoalState(cur_state):
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
                 while cur_state != first:
                     ele = map[cur_state]
-                    res_list.append(ele[1])
-                    cur_state = ele[0]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0,target_turn)
                 res_list.reverse()
                 return res_list
 
             #if neighbours are not visited , push them to stack.
-            for neighbour in problem.getSuccessors(cur_state):
+            for neighbour in problem.getSuccessors(cur_point):
                 if neighbour[0] not in visited:
                     stack.push(neighbour)
-                    map[neighbour[0]] = (cur_state, neighbour[1])
+                    map[neighbour] = cur_state
     return res_list
 
 def breadthFirstSearch(problem):
@@ -143,34 +147,37 @@ def breadthFirstSearch(problem):
     queue = util.Queue()
     for successor in problem.getSuccessors(problem.getStartState()):
         queue.push(successor)
-        map[successor[0]] = (first, successor[1])
+        map[successor] = first
 
     # result list consists the directions.
     res_list = []
 
     # while queue is not empty, loop over it.
     while not queue.isEmpty():
-        cur_state = queue.pop()[0]
+        cur_state = queue.pop()
+        cur_point = cur_state[0]
 
         # check whether current point is not visited and make it as true.
-        if cur_state not in visited:
-            visited[cur_state] = True
+        if cur_point not in visited:
+            visited[cur_point] = True
 
             # if current point is goal state , loop over map and return the path.
-            if problem.isGoalState(cur_state):
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
                 while cur_state != first:
                     ele = map[cur_state]
-                    res_list.append(ele[1])
-                    cur_state = ele[0]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0, target_turn)
                 res_list.reverse()
                 return res_list
 
             # if neighbours are not visited , push them to queue.
-            for neighbour in problem.getSuccessors(cur_state):
+            for neighbour in problem.getSuccessors(cur_point):
                 if neighbour[0] not in visited:
                     queue.push(neighbour)
-                    if neighbour[0] not in map:
-                        map[neighbour[0]] = (cur_state, neighbour[1])
+                    map[neighbour] = cur_state
     return res_list
 
 def uniformCostSearch(problem):
@@ -201,7 +208,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     for successor in problem.getSuccessors(problem.getStartState()):
         path_cost[successor] = successor[2]
         pqueue.push(successor, path_cost[successor] + heuristic(successor[0], problem))
-        map[successor[0]] = (first, successor[1])
+        map[successor] = first
 
     # result list consists the directions.
     res_list = []
@@ -210,17 +217,19 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     while not pqueue.isEmpty():
         cur_state = pqueue.pop()
         cur_point = cur_state[0]
-        print cur_point
         # check whether current point is not visited and make it as true.
         if cur_point not in visited:
             visited[cur_point] = True
 
             # if current point is goal state , loop over map and return the path.
             if problem.isGoalState(cur_point):
-                while cur_point != first:
-                    ele = map[cur_point]
-                    res_list.append(ele[1])
-                    cur_point = ele[0]
+                target_turn = cur_state[1]
+                while cur_state != first:
+                    ele = map[cur_state]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0, target_turn)
                 res_list.reverse()
                 print res_list
                 return res_list
@@ -230,8 +239,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 if neighbour[0] not in visited:
                     path_cost[neighbour] = path_cost[cur_state] + neighbour[2]
                     pqueue.push(neighbour, path_cost[neighbour] + heuristic(neighbour[0], problem))
-                    if neighbour[0] not in map:
-                        map[neighbour[0]] = (cur_point, neighbour[1])
+                    map[neighbour] = cur_state
     return res_list
 
 
