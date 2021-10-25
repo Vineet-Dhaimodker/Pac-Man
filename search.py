@@ -87,17 +87,150 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #starting point of pac-man
+    first = problem.getStartState()
+
+    #to check whether a point is visited or not
+    visited = {}
+    visited[first]= True
+
+    #path map.
+    map={}
+    stack = util.Stack()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        stack.push(successor)
+        map[successor] = first
+
+    #result list consists the directions.
+    res_list=[]
+
+    #while stack is not empty, loop over it.
+    while not stack.isEmpty():
+        cur_state = stack.pop()
+        cur_point = cur_state[0]
+
+        #check whether current point is not visited and make it as true.
+        if cur_point not in visited:
+            visited[cur_point] = True
+
+            #if current point is goal state , loop over map and return the path.
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
+                while cur_state != first:
+                    ele = map[cur_state]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0,target_turn)
+                res_list.reverse()
+                return res_list
+
+            #if neighbours are not visited , push them to stack.
+            for neighbour in problem.getSuccessors(cur_point):
+                if neighbour[0] not in visited:
+                    stack.push(neighbour)
+                    map[neighbour] = cur_state
+    return res_list
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # starting point of pac-man
+    first = problem.getStartState()
+
+    # to check whether a point is visited or not
+    visited = {}
+    visited[first] = True
+
+    # path map.
+    map = {}
+    queue = util.Queue()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        queue.push(successor)
+        map[successor] = first
+
+    # result list consists the directions.
+    res_list = []
+
+    # while queue is not empty, loop over it.
+    while not queue.isEmpty():
+        cur_state = queue.pop()
+        cur_point = cur_state[0]
+
+        # check whether current point is not visited and make it as true.
+        if cur_point not in visited:
+            visited[cur_point] = True
+
+            # if current point is goal state , loop over map and return the path.
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
+                while cur_state != first:
+                    ele = map[cur_state]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0, target_turn)
+                res_list.reverse()
+                return res_list
+
+            # if neighbours are not visited , push them to queue.
+            for neighbour in problem.getSuccessors(cur_point):
+                if neighbour[0] not in visited:
+                    queue.push(neighbour)
+                    map[neighbour] = cur_state
+    return res_list
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # we will use path cost value in priority queue.
+    # starting point of pac-man
+    first = problem.getStartState()
+    path_cost = {}
+
+    # to check whether a point is visited or not
+    visited = {}
+    visited[first] = True
+
+    # path map.
+    map = {}
+    pqueue = util.PriorityQueue()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        path_cost[successor] = successor[2]
+        pqueue.push(successor, path_cost[successor])
+        map[successor] = first
+
+    # result list consists the directions.
+    res_list = []
+
+    # while queue is not empty, loop over it.
+    while not pqueue.isEmpty():
+        cur_state = pqueue.pop()
+        cur_point = cur_state[0]
+        # check whether current point is not visited and make it as true.
+        if cur_point not in visited:
+            visited[cur_point] = True
+
+            # if current point is goal state , loop over map and return the path.
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
+                while cur_state != first:
+                    ele = map[cur_state]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0, target_turn)
+                res_list.reverse()
+                print res_list
+                return res_list
+
+            # if neighbours are not visited , push them to queue.
+            for neighbour in problem.getSuccessors(cur_point):
+                if neighbour[0] not in visited:
+                    path_cost[neighbour] = path_cost[cur_state] + neighbour[2]
+                    pqueue.push(neighbour, path_cost[neighbour])
+                    map[neighbour] = cur_state
+    return res_list
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +242,54 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #we will use path cost plus heuristic function value in priority queue.
+    # starting point of pac-man
+    first = problem.getStartState()
+    path_cost={}
+
+    # to check whether a point is visited or not
+    visited = {}
+    visited[first] = True
+
+    # path map.
+    map = {}
+    pqueue = util.PriorityQueue()
+    for successor in problem.getSuccessors(problem.getStartState()):
+        path_cost[successor] = successor[2]
+        pqueue.push(successor, path_cost[successor] + heuristic(successor[0], problem))
+        map[successor] = first
+
+    # result list consists the directions.
+    res_list = []
+
+    # while queue is not empty, loop over it.
+    while not pqueue.isEmpty():
+        cur_state = pqueue.pop()
+        cur_point = cur_state[0]
+        # check whether current point is not visited and make it as true.
+        if cur_point not in visited:
+            visited[cur_point] = True
+
+            # if current point is goal state , loop over map and return the path.
+            if problem.isGoalState(cur_point):
+                target_turn = cur_state[1]
+                while cur_state != first:
+                    ele = map[cur_state]
+                    if ele != first:
+                        res_list.append(ele[1])
+                    cur_state = ele
+                res_list.insert(0, target_turn)
+                res_list.reverse()
+                print res_list
+                return res_list
+
+            # if neighbours are not visited , push them to queue.
+            for neighbour in problem.getSuccessors(cur_point):
+                if neighbour[0] not in visited:
+                    path_cost[neighbour] = path_cost[cur_state] + neighbour[2]
+                    pqueue.push(neighbour, path_cost[neighbour] + heuristic(neighbour[0], problem))
+                    map[neighbour] = cur_state
+    return res_list
 
 
 # Abbreviations
