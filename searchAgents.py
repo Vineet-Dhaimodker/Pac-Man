@@ -321,7 +321,6 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
-        visitedCorners = list(state[1])
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -332,6 +331,7 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
             #get successors as (state, action, cost) and state will be (position, corners)
+            visitedCorners = list(state[1])
             x,y = state[0]
             dx,dy = Actions.directionToVector(action)
             nextx,nexty = int(x + dx),int(y + dy)
@@ -344,6 +344,7 @@ class CornersProblem(search.SearchProblem):
                             i = ind
                     visitedCorners[i] = (nextx,nexty)
                     nextState =  ((nextx,nexty),tuple(visitedCorners))
+
                     successors.append((nextState,action,1))
                 else:
                     nextState = ((nextx,nexty),state[1])
@@ -382,16 +383,29 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    #heuristic cost is max distance unvisited corner.
-    max_distance  = 0
+
+    res = 0
     unvisited_corners = []
-    for i, corner in enumerate(corners):
+
+    #append all unvisited corners to list from current state
+    for i,corner in enumerate(corners):
         if state[1][i] == corner:
             continue
         unvisited_corners.append(corner)
-    for corner in unvisited_corners:
-        max_distance = max(util.manhattanDistance(state[0], corner), max_distance)
-    return  max_distance
+
+    cur_point = state[0]
+
+    #loop through all unvisited corners and find the cost from current point to min distance corner
+    #and that corner to other min distance corner untill all unvisited corners are visited
+    while len(unvisited_corners)!=0:
+        min_distance = sys.maxsize
+        min_corner = (-1, -1)
+        for corner in unvisited_corners:
+            min_distance, min_corner = min((util.manhattanDistance(cur_point, corner),corner), (min_distance, min_corner))
+        unvisited_corners.remove(min_corner)
+        cur_point = min_corner
+        res = res + min_distance
+    return res
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
