@@ -295,14 +295,25 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #print self.startingPosition,self.corners
+        
+        return self.startingPosition,self.corners
+
+        # util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        posi,cons= state
+        if posi in cons and len(cons)==1:
+            return True
+
+        return False
+
+        # util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -325,6 +336,25 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+
+            posi,cons= state
+
+            x,y = posi
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+
+            if not hitsWall:
+                if posi not in cons:
+                    nextState= ((nextx,nexty), cons)
+                else:
+                    newcons=[]
+                    for c in cons:
+                        if c !=posi:
+                            newcons.append(c)
+                    nextState=((nextx,nexty), tuple(newcons))
+                successors.append((nextState,action,1))
+
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +390,19 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    posi,cons= state
+
+    distances=[0,0,0,0]
+    d=[]
+    for i in range(len(distances)):
+        distances[i]= abs(corners[i][0] - posi[0]) + abs(corners[i][1] - posi[1])
+
+
+    for c in cons:
+        d.append(abs(c[0] - posi[0]) + abs(c[1] - posi[1]))
+    dd=sorted(distances)
+
+    return d[-1] #+int(dd[1]//2)+int(dd[2]//4)+int(dd[3]//16) # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
