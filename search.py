@@ -280,7 +280,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     cur_state = ele
                 res_list.insert(0, target_turn)
                 res_list.reverse()
-                print res_list
+                # print res_list
                 return res_list
 
             # if neighbours are not visited , push them to queue.
