@@ -486,7 +486,6 @@ class HeuristicTest(testClasses.TestCase):
 
     def checkHeuristic(self, heuristic, problem, state, solutionCost):
         h0 = heuristic(state, problem)
-
         if solutionCost == 0:
             if h0 == 0:
                 return True, ''
