@@ -1,4 +1,4 @@
-Artificial Intelligence, Pacman Game (Fall 2016)
+Artificial Intelligence, Pacman Game
 ======================================
 
 ## Intro
