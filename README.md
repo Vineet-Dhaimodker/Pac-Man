@@ -37,7 +37,3 @@ $ python pacman.py -l trickySearch -p AStarFoodSearchAgent
 
 <!-- > for more information, check [here](https://github.com/jasonwu0731/NTU-AI-Fall2016/blob/master/Pacman/hw1-search/Project1.html) for details -->
 
-
-## Credits
-- This is the homework project for the course Artificial Intelligence  (2021 Fall), at UCR
-- Author: Vineet, Jaya, Aman
